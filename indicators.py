@@ -21,3 +21,11 @@ def chaikin_money_flow(high, low, close, volume, period=20):
     mfv = clv * volume
     cmf = np.convolve(mfv, np.ones(period), mode='same') / (np.convolve(volume, np.ones(period), mode='same') + 1e-8)
     return cmf
+
+def hull_moving_average(close, period=20):
+    half = int(period / 2)
+    wma_half = np.convolve(close, np.arange(1, half+1)[::-1] / np.sum(np.arange(1, half+1)), mode='same')
+    wma_full = np.convolve(close, np.arange(1, period+1)[::-1] / np.sum(np.arange(1, period+1)), mode='same')
+    raw = 2 * wma_half - wma_full
+    sqrt_p = int(np.sqrt(period))
+    return np.convolve(raw, np.arange(1, sqrt_p+1)[::-1] / np.sum(np.arange(1, sqrt_p+1)), mode='same')
