@@ -25,3 +25,17 @@ def bollinger(series, window=20, std=2):
     mid = sma(series, window)
     band = series.rolling(window).std()
     return mid - std*band, mid, mid + std*band
+def atr(df, period=14):
+    import numpy as np
+    hl = df['High'] - df['Low']
+    hc = (df['High'] - df['Close'].shift()).abs()
+    lc = (df['Low']  - df['Close'].shift()).abs()
+    tr = hl.combine(hc, max).combine(lc, max)
+    return tr.rolling(period).mean()
+
+def stochastic(df, k=14, d=3):
+    low_min  = df['Low'].rolling(k).min()
+    high_max = df['High'].rolling(k).max()
+    k_pct = 100 * (df['Close'] - low_min) / (high_max - low_min + 1e-9)
+    return k_pct, k_pct.rolling(d).mean()
+
