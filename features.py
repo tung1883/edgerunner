@@ -24,3 +24,18 @@ def split(df, test_ratio=0.2):
     n = int(len(df) * (1 - test_ratio))
     return df.iloc[:n], df.iloc[n:]
 
+
+def lag_features(series, lags=(1, 2, 3, 5, 10)):
+    out = {}
+    for l in lags:
+        out[f"lag_{l}"] = np.roll(series, l)
+    return out
+
+def rolling_zscore(series, window=20):
+    mu = np.convolve(series, np.ones(window)/window, mode='same')
+    diff = series - mu
+    sigma = np.sqrt(np.convolve(diff**2, np.ones(window)/window, mode='same'))
+    return np.divide(diff, sigma, where=sigma > 1e-8)
+
+def price_momentum(close, periods=(5, 10, 20)):
+    return {f"mom_{p}": close / np.roll(close, p) - 1 for p in periods}
