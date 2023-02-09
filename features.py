@@ -39,3 +39,10 @@ def rolling_zscore(series, window=20):
 
 def price_momentum(close, periods=(5, 10, 20)):
     return {f"mom_{p}": close / np.roll(close, p) - 1 for p in periods}
+
+def volume_ratio(volume, window=20):
+    avg_vol = np.convolve(volume, np.ones(window)/window, mode='same')
+    return np.divide(volume, avg_vol, where=avg_vol > 0)
+
+def gap_feature(open_, prev_close):
+    return (open_ - prev_close) / (prev_close + 1e-8)
