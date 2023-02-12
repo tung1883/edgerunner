@@ -21,3 +21,21 @@ def dual_momentum(returns_asset, returns_bench, lookback=252):
     sig = np.zeros(len(returns_asset))
     sig[(abs_mom > 0) & (rel_mom > 0)] = 1
     return sig
+
+def turtle_trading(close, high, low, entry_period=20, exit_period=10):
+    """Donchian-channel turtle breakout."""
+    from indicators import donchian_channel
+    entry_hi, entry_lo, _ = donchian_channel(high, low, entry_period)
+    exit_hi,  exit_lo,  _ = donchian_channel(high, low, exit_period)
+    sig = np.zeros(len(close))
+    pos = 0
+    for i in range(entry_period, len(close)):
+        if pos == 0:
+            if close[i] >= entry_hi[i-1]: pos = 1
+            elif close[i] <= entry_lo[i-1]: pos = -1
+        elif pos == 1 and close[i] <= exit_lo[i-1]:
+            pos = 0
+        elif pos == -1 and close[i] >= exit_hi[i-1]:
+            pos = 0
+        sig[i] = pos
+    return sig
