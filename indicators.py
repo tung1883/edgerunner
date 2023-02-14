@@ -38,4 +38,12 @@ def stochastic(df, k=14, d=3):
     high_max = df['High'].rolling(k).max()
     k_pct = 100 * (df['Close'] - low_min) / (high_max - low_min + 1e-9)
     return k_pct, k_pct.rolling(d).mean()
+def obv(df):
+    import numpy as np
+    direction = np.sign(df['Close'].diff())
+    return (direction * df['Volume']).cumsum()
+
+def vwap(df):
+    tp = (df['High'] + df['Low'] + df['Close']) / 3
+    return (tp * df['Volume']).cumsum() / df['Volume'].cumsum()
 
