@@ -16,4 +16,8 @@ def build(df):
     feats['vol_20']   = feats['returns'].rolling(20).std()
     feats.dropna(inplace=True)
     return feats
+def normalise(df):
+    from sklearn.preprocessing import StandardScaler
+    scaler = StandardScaler()
+    return pd.DataFrame(scaler.fit_transform(df), columns=df.columns, index=df.index), scaler
 
