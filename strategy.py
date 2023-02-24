@@ -39,3 +39,10 @@ def turtle_trading(close, high, low, entry_period=20, exit_period=10):
             pos = 0
         sig[i] = pos
     return sig
+
+def carry_strategy(forward_rates, spot_rates):
+    """Long high-carry, short low-carry currencies/assets."""
+    carry = forward_rates - spot_rates
+    rank = carry.argsort().argsort().astype(float)
+    rank = (rank - rank.mean()) / (rank.std() + 1e-8)
+    return rank
