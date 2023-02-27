@@ -20,4 +20,7 @@ def normalise(df):
     from sklearn.preprocessing import StandardScaler
     scaler = StandardScaler()
     return pd.DataFrame(scaler.fit_transform(df), columns=df.columns, index=df.index), scaler
+def split(df, test_ratio=0.2):
+    n = int(len(df) * (1 - test_ratio))
+    return df.iloc[:n], df.iloc[n:]
 
