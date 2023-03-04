@@ -33,3 +33,33 @@ def sharpe_score(y_true, y_pred):
     rets = y_true * y_pred
     return rets.mean() / (rets.std() + 1e-9) * (252 ** 0.5)
 
+
+class RidgeRegressor:
+    def __init__(self, alpha=1.0):
+        self.alpha = alpha
+        self.w = None
+
+    def fit(self, X, y):
+        n, d = X.shape
+        I = np.eye(d)
+        self.w = np.linalg.solve(X.T @ X + self.alpha * I, X.T @ y)
+
+    def predict(self, X):
+        return X @ self.w
+
+class LogisticRegression:
+    def __init__(self, lr=0.01, n_iter=500, C=1.0):
+        self.lr, self.n_iter, self.C = lr, n_iter, C
+        self.w = None
+
+    def _sigmoid(self, z): return 1 / (1 + np.exp(-np.clip(z, -30, 30)))
+
+    def fit(self, X, y):
+        self.w = np.zeros(X.shape[1])
+        for _ in range(self.n_iter):
+            p = self._sigmoid(X @ self.w)
+            grad = X.T @ (p - y) / len(y) + self.w / self.C
+            self.w -= self.lr * grad
+
+    def predict_proba(self, X): return self._sigmoid(X @ self.w)
+    def predict(self, X): return (self.predict_proba(X) >= 0.5).astype(int)
