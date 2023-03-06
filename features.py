@@ -46,3 +46,19 @@ def volume_ratio(volume, window=20):
 
 def gap_feature(open_, prev_close):
     return (open_ - prev_close) / (prev_close + 1e-8)
+
+def earnings_proximity(dates, earnings_dates, window=5):
+    """Binary feature: within `window` days of earnings."""
+    feat = np.zeros(len(dates))
+    for i, d in enumerate(dates):
+        for ed in earnings_dates:
+            if abs((d - ed).days) <= window:
+                feat[i] = 1
+                break
+    return feat
+
+def day_of_week(dates):
+    return np.array([d.weekday() for d in dates])
+
+def month_of_year(dates):
+    return np.array([d.month for d in dates])
