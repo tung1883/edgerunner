@@ -63,3 +63,18 @@ class LogisticRegression:
 
     def predict_proba(self, X): return self._sigmoid(X @ self.w)
     def predict(self, X): return (self.predict_proba(X) >= 0.5).astype(int)
+
+class KNNClassifier:
+    def __init__(self, k=5):
+        self.k = k
+
+    def fit(self, X, y):
+        self.X_train, self.y_train = X, y
+
+    def predict(self, X):
+        out = []
+        for x in X:
+            dists = np.sum((self.X_train - x)**2, axis=1)
+            idx = np.argsort(dists)[:self.k]
+            out.append(np.bincount(self.y_train[idx].astype(int)).argmax())
+        return np.array(out)
