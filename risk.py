@@ -76,3 +76,10 @@ def recovery_factor(equity):
     roll_max = np.maximum.accumulate(equity)
     max_dd = ((equity - roll_max) / roll_max).min()
     return total_return / (-max_dd + 1e-8)
+
+def parametric_var(returns, confidence=0.99):
+    mu, sigma = returns.mean(), returns.std()
+    from scipy.stats import norm
+    # pure numpy approximation
+    z = 2.326 if confidence == 0.99 else 1.645
+    return -(mu - z * sigma)
