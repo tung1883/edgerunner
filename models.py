@@ -15,4 +15,11 @@ def train_rf(X_train, y_train, n_estimators=100):
     model = RandomForestClassifier(n_estimators=n_estimators, random_state=42)
     model.fit(X_train, y_train)
     return model
+from sklearn.ensemble import GradientBoostingClassifier
+
+def train_gb(X_train, y_train):
+    model = GradientBoostingClassifier(n_estimators=200, learning_rate=0.05,
+                                        max_depth=4, random_state=42)
+    model.fit(X_train, y_train)
+    return model
 
