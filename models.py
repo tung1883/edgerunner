@@ -78,3 +78,24 @@ class KNNClassifier:
             idx = np.argsort(dists)[:self.k]
             out.append(np.bincount(self.y_train[idx].astype(int)).argmax())
         return np.array(out)
+
+class SVMLinear:
+    """Linear SVM via SGD (Pegasos algorithm)."""
+    def __init__(self, C=1.0, n_iter=1000):
+        self.C, self.n_iter = C, n_iter
+        self.w, self.b = None, 0.0
+
+    def fit(self, X, y):
+        n, d = X.shape
+        self.w = np.zeros(d)
+        y_ = 2*y - 1
+        for t in range(1, self.n_iter + 1):
+            lr = 1 / (self.C * t)
+            i = np.random.randint(n)
+            if y_[i] * (X[i] @ self.w + self.b) < 1:
+                self.w = (1 - lr) * self.w + lr * self.C * y_[i] * X[i]
+                self.b += lr * self.C * y_[i]
+            else:
+                self.w *= (1 - lr)
+
+    def predict(self, X): return ((X @ self.w + self.b) >= 0).astype(int)
