@@ -62,3 +62,17 @@ def stress_test_pnl(weights, returns_matrix, shock_pct=-0.20):
     shocked[0] = shock_pct
     port_ret = shocked @ weights
     return port_ret.cumsum()
+
+def tail_ratio(returns, percentile=5):
+    upper = np.abs(np.percentile(returns, 100 - percentile))
+    lower = np.abs(np.percentile(returns, percentile))
+    return upper / (lower + 1e-8)
+
+def gain_to_pain(returns):
+    return returns.sum() / (np.abs(returns[returns < 0]).sum() + 1e-8)
+
+def recovery_factor(equity):
+    total_return = equity[-1] / equity[0] - 1
+    roll_max = np.maximum.accumulate(equity)
+    max_dd = ((equity - roll_max) / roll_max).min()
+    return total_return / (-max_dd + 1e-8)
