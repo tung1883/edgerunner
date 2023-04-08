@@ -13,3 +13,11 @@ def breakout_signal(close, high, low, period=20):
     sig[close > roll_high] = 1
     sig[close < roll_low]  = -1
     return sig
+
+def dual_momentum(returns_asset, returns_bench, lookback=252):
+    """Gary Antonacci dual momentum — absolute + relative."""
+    abs_mom = np.convolve(returns_asset, np.ones(lookback), mode='same')
+    rel_mom = abs_mom - np.convolve(returns_bench, np.ones(lookback), mode='same')
+    sig = np.zeros(len(returns_asset))
+    sig[(abs_mom > 0) & (rel_mom > 0)] = 1
+    return sig
