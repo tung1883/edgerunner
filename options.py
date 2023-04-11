@@ -24,3 +24,21 @@ def implied_vol(market_price, S, K, T, r, tol=1e-4, max_iter=100):
         if abs(diff) < tol: break
         sigma += diff / (vega + 1e-8)
     return sigma
+
+def delta(S, K, T, r, sigma):
+    return _norm_cdf(_d1(S, K, T, r, sigma))
+
+def gamma(S, K, T, r, sigma):
+    d1 = _d1(S, K, T, r, sigma)
+    return np.exp(-0.5*d1**2) / (S * sigma * np.sqrt(2*np.pi*T) + 1e-8)
+
+def theta(S, K, T, r, sigma):
+    d1 = _d1(S, K, T, r, sigma)
+    d2 = d1 - sigma * np.sqrt(T)
+    term1 = -S * sigma * np.exp(-0.5*d1**2) / (2 * np.sqrt(2*np.pi*T) + 1e-8)
+    term2 = -r * K * np.exp(-r*T) * _norm_cdf(d2)
+    return term1 + term2
+
+def vega(S, K, T, r, sigma):
+    d1 = _d1(S, K, T, r, sigma)
+    return S * np.sqrt(T) * np.exp(-0.5*d1**2) / np.sqrt(2*np.pi)
