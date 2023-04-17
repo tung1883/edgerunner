@@ -29,3 +29,13 @@ def win_loss_stats(pnl):
         "avg_loss": losses.mean() if len(losses) else 0.0,
         "profit_factor": wins.sum() / (-losses.sum() + 1e-8),
     }
+
+def time_weighted_return(cash_flows, market_values, dates):
+    """True time-weighted return eliminating cash flow distortion."""
+    sub_returns = []
+    for i in range(1, len(market_values)):
+        mv_start = market_values[i-1] + cash_flows[i]
+        if mv_start > 0:
+            sub_returns.append(market_values[i] / mv_start - 1)
+    twr = np.prod([1 + r for r in sub_returns]) - 1
+    return twr
