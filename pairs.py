@@ -20,3 +20,13 @@ def pairs_signal(spread, entry_z=2.0, exit_z=0.5):
         elif pos == -1 and z[i] <=  exit_z: pos = 0
         sig[i] = pos
     return sig
+
+def johansen_cointegration_simple(price_a, price_b):
+    """Check stationarity of spread via ADF-proxy."""
+    spread, beta, alpha = cointegration_residual(price_a, price_b)
+    dspread = np.diff(spread)
+    lag_spread = spread[:-1]
+    ols_X = np.column_stack([lag_spread, np.ones(len(lag_spread))])
+    coef = np.linalg.lstsq(ols_X, dspread, rcond=None)[0]
+    adf_stat = coef[0] / (dspread.std() / np.sqrt(len(dspread)) + 1e-8)
+    return adf_stat, spread
