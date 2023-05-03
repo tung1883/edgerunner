@@ -32,3 +32,19 @@ def stress_test(weights, scenario_returns):
     return {'mean_loss': float(np.mean(losses)),
             'worst_loss': float(np.min(losses))}
 
+
+def expected_shortfall(returns, alpha=0.05):
+    var = np.percentile(returns, alpha * 100)
+    return returns[returns <= var].mean()
+
+def omega_ratio(returns, threshold=0.0):
+    gains = returns[returns > threshold] - threshold
+    losses = threshold - returns[returns <= threshold]
+    return gains.sum() / (losses.sum() + 1e-8)
+
+def calmar_ratio(returns, period=252):
+    ann_return = returns.mean() * period
+    roll_max = np.maximum.accumulate(np.cumprod(1 + returns))
+    drawdown = (np.cumprod(1 + returns) - roll_max) / roll_max
+    max_dd = drawdown.min()
+    return ann_return / (-max_dd + 1e-8)
