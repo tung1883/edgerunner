@@ -48,3 +48,17 @@ def calmar_ratio(returns, period=252):
     drawdown = (np.cumprod(1 + returns) - roll_max) / roll_max
     max_dd = drawdown.min()
     return ann_return / (-max_dd + 1e-8)
+
+def rolling_var(returns, window=252, alpha=0.05):
+    var = []
+    for i in range(len(returns)):
+        window_ret = returns[max(0, i-window):i+1]
+        var.append(np.percentile(window_ret, alpha * 100))
+    return np.array(var)
+
+def stress_test_pnl(weights, returns_matrix, shock_pct=-0.20):
+    """Simulate a sudden N% market shock across all assets."""
+    shocked = returns_matrix.copy()
+    shocked[0] = shock_pct
+    port_ret = shocked @ weights
+    return port_ret.cumsum()
