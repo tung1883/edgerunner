@@ -90,3 +90,23 @@ def plot_monthly_returns_heatmap(returns, dates):
     plt.colorbar(im, ax=ax)
     fig.tight_layout()
     return fig
+
+def plot_correlation_matrix(labels, corr_matrix):
+    import matplotlib.pyplot as plt
+    fig, ax = plt.subplots(figsize=(8, 7))
+    im = ax.imshow(corr_matrix, cmap="coolwarm", vmin=-1, vmax=1)
+    ax.set_xticks(range(len(labels))); ax.set_xticklabels(labels, rotation=45, ha='right')
+    ax.set_yticks(range(len(labels))); ax.set_yticklabels(labels)
+    plt.colorbar(im, ax=ax)
+    fig.tight_layout()
+    return fig
+
+def plot_feature_importance(names, importances, top_n=20):
+    import matplotlib.pyplot as plt
+    idx = np.argsort(importances)[-top_n:]
+    fig, ax = plt.subplots(figsize=(8, 6))
+    ax.barh(range(len(idx)), importances[idx])
+    ax.set_yticks(range(len(idx))); ax.set_yticklabels([names[i] for i in idx])
+    ax.set_xlabel("Importance")
+    fig.tight_layout()
+    return fig
