@@ -13,3 +13,14 @@ def plot_feature_importance(model, feature_names, out='feature_importance.png'):
     plt.savefig(out)
     plt.close()
 
+def plot_predictions(dates, actual, predicted, out='predictions.png'):
+    import matplotlib.pyplot as plt
+    plt.figure(figsize=(12, 5))
+    plt.plot(dates, actual,    label='Actual',    linewidth=1.5)
+    plt.plot(dates, predicted, label='Predicted', linestyle='--', linewidth=1.5)
+    plt.title('LSTM Price Prediction')
+    plt.legend()
+    plt.tight_layout()
+    plt.savefig(out)
+    plt.close()
+
