@@ -39,3 +39,8 @@ def time_weighted_return(cash_flows, market_values, dates):
             sub_returns.append(market_values[i] / mv_start - 1)
     twr = np.prod([1 + r for r in sub_returns]) - 1
     return twr
+
+def portfolio_heat(positions, prices, equity):
+    """Percentage of equity at risk across all open positions."""
+    gross = sum(abs(qty) * prices.get(t, 0) for t, qty in positions.items())
+    return gross / (equity + 1e-8)
