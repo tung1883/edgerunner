@@ -14,4 +14,5 @@ def scale(arr):
 
 def unscale(arr, mn, mx):
     return arr * (mx - mn) + mn
+SEQ_LEN = 60  # tuned from 30 — captures longer momentum patterns
 
