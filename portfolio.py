@@ -28,3 +28,17 @@ class Portfolio:
         return {t: min(self.positions.get(t,0)*p, total*max_pct)
                 for t, p in prices.items()}
 
+
+def rebalance_schedule(weights_history, threshold=0.05):
+    """Trigger rebalance when any weight drifts beyond threshold."""
+    triggers = []
+    target = weights_history[0]
+    for i, w in enumerate(weights_history):
+        if np.any(np.abs(w - target) > threshold):
+            triggers.append(i)
+            target = w
+    return triggers
+
+def turnover(weights_history):
+    diffs = np.diff(weights_history, axis=0)
+    return np.abs(diffs).sum(axis=1)
