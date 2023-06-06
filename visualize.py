@@ -24,3 +24,16 @@ def plot_predictions(dates, actual, predicted, out='predictions.png'):
     plt.savefig(out)
     plt.close()
 
+def plot_correlation(df, out='correlation.png'):
+    import matplotlib.pyplot as plt
+    corr = df.corr()
+    plt.figure(figsize=(8, 6))
+    plt.imshow(corr, cmap='coolwarm', vmin=-1, vmax=1)
+    plt.colorbar()
+    plt.xticks(range(len(corr)), corr.columns, rotation=45)
+    plt.yticks(range(len(corr)), corr.columns)
+    plt.title('Asset Correlation Matrix')
+    plt.tight_layout()
+    plt.savefig(out)
+    plt.close()
+
