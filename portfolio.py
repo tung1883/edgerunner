@@ -42,3 +42,14 @@ def rebalance_schedule(weights_history, threshold=0.05):
 def turnover(weights_history):
     diffs = np.diff(weights_history, axis=0)
     return np.abs(diffs).sum(axis=1)
+
+def tax_loss_harvest(positions, prices, cost_basis, threshold=-0.05):
+    """Flag positions with unrealised loss below threshold for harvesting."""
+    candidates = []
+    for ticker, qty in positions.items():
+        if ticker not in prices or ticker not in cost_basis:
+            continue
+        pnl_pct = (prices[ticker] - cost_basis[ticker]) / cost_basis[ticker]
+        if pnl_pct < threshold:
+            candidates.append({"ticker": ticker, "qty": qty, "pnl_pct": pnl_pct})
+    return sorted(candidates, key=lambda x: x["pnl_pct"])
