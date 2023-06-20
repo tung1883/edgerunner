@@ -43,3 +43,21 @@ def hierarchical_risk_parity(cov):
     for rank, idx in enumerate(order):
         final[idx] = weights[rank]
     return final
+
+def risk_parity_newton(cov, tol=1e-8, max_iter=1000):
+    """Faster risk parity via Newton's method."""
+    n = cov.shape[0]
+    w = np.ones(n) / n
+    for _ in range(max_iter):
+        sigma = np.sqrt(w @ cov @ w)
+        mrc = cov @ w / sigma
+        rc  = w * mrc
+        target = sigma / n
+        grad = rc - target
+        hess = np.diag(mrc) + np.outer(w, cov.sum(axis=1)) / sigma
+        step = np.linalg.solve(hess + 1e-6*np.eye(n), grad)
+        w -= step
+        w = np.abs(w); w /= w.sum()
+        if np.linalg.norm(grad) < tol:
+            break
+    return w
