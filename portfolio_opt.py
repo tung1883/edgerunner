@@ -27,3 +27,19 @@ def black_litterman(prior_returns, cov, P, Q, omega=None, tau=0.05):
     post_cov = np.linalg.inv(M1 + M2)
     post_ret = post_cov @ (M1 @ prior_returns + P.T @ np.linalg.inv(omega) @ Q)
     return post_ret, post_cov
+
+def hierarchical_risk_parity(cov):
+    """Simple HRP — cluster by correlation, allocate by inverse variance."""
+    n = cov.shape[0]
+    vols = np.sqrt(np.diag(cov))
+    corr = cov / np.outer(vols, vols)
+    dist = np.sqrt((1 - corr) / 2)
+    # single-linkage sort (simplified)
+    order = list(range(n))
+    order.sort(key=lambda i: dist[i].sum())
+    weights = 1.0 / (vols[order] + 1e-8)
+    weights /= weights.sum()
+    final = np.zeros(n)
+    for rank, idx in enumerate(order):
+        final[idx] = weights[rank]
+    return final
