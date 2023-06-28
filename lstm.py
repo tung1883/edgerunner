@@ -64,3 +64,23 @@ class LSTMWithDropout:
                 x = x * dropout_mask(x.shape, self.keep_prob)
             h, c = self.cell.forward(x, h, c)
         return h
+
+class GRUCell:
+    """Gated Recurrent Unit — fewer parameters than LSTM."""
+    def __init__(self, input_size, hidden_size):
+        self.hidden_size = hidden_size
+        s = np.sqrt(2 / (input_size + hidden_size))
+        self.W_z = np.random.randn(input_size + hidden_size, hidden_size) * s
+        self.W_r = np.random.randn(input_size + hidden_size, hidden_size) * s
+        self.W_h = np.random.randn(input_size + hidden_size, hidden_size) * s
+        self.b_z = np.zeros(hidden_size)
+        self.b_r = np.zeros(hidden_size)
+        self.b_h = np.zeros(hidden_size)
+
+    def forward(self, x, h):
+        xh = np.concatenate([x, h])
+        z = 1 / (1 + np.exp(-np.clip(xh @ self.W_z + self.b_z, -30, 30)))
+        r = 1 / (1 + np.exp(-np.clip(xh @ self.W_r + self.b_r, -30, 30)))
+        xrh = np.concatenate([x, r * h])
+        h_hat = np.tanh(xrh @ self.W_h + self.b_h)
+        return (1 - z) * h + z * h_hat
