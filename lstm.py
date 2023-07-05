@@ -28,3 +28,19 @@ class LSTMCell:
         h   = o * tanh(c)
         return h, c
 
+
+class StackedLSTM:
+    """Two-layer stacked LSTM."""
+    def __init__(self, input_size, hidden_sizes=(64, 32), output_size=1):
+        self.layer1 = LSTMCell(input_size, hidden_sizes[0])
+        self.layer2 = LSTMCell(hidden_sizes[0], hidden_sizes[1])
+        self.W_out = np.random.randn(hidden_sizes[1], output_size) * 0.01
+        self.b_out = np.zeros(output_size)
+
+    def forward(self, X):
+        h1, c1 = np.zeros(self.layer1.hidden_size), np.zeros(self.layer1.hidden_size)
+        h2, c2 = np.zeros(self.layer2.hidden_size), np.zeros(self.layer2.hidden_size)
+        for t in range(X.shape[0]):
+            h1, c1 = self.layer1.forward(X[t], h1, c1)
+            h2, c2 = self.layer2.forward(h1, h2, c2)
+        return h2 @ self.W_out + self.b_out
