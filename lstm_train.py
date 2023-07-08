@@ -42,3 +42,13 @@ def train_with_early_stopping(model, X_tr, y_tr, X_val, y_val,
             if wait >= patience:
                 break
     return best_val
+
+def batch_generator(X, y, batch_size=32, shuffle=True):
+    n = len(X)
+    idx = np.random.permutation(n) if shuffle else np.arange(n)
+    for start in range(0, n, batch_size):
+        b = idx[start:start+batch_size]
+        yield X[b], y[b]
+
+def cosine_annealing_lr(epoch, T_max, eta_min=1e-5, eta_max=1e-3):
+    return eta_min + 0.5 * (eta_max - eta_min) * (1 + np.cos(np.pi * epoch / T_max))
