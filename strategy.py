@@ -24,3 +24,8 @@ def regime_adaptive(df, regime, aggressive_fast=10, aggressive_slow=30,
     combined[regime == 'high_vol'] = def_signal[regime == 'high_vol']
     return (combined > 0).astype(int).diff().fillna(0)
 
+def momentum(df, formation=252, skip=21):
+    close = df['Close']
+    past_return = close.shift(skip) / close.shift(formation) - 1
+    return (past_return > past_return.median()).astype(int).diff().fillna(0)
+
