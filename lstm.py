@@ -44,3 +44,23 @@ class StackedLSTM:
             h1, c1 = self.layer1.forward(X[t], h1, c1)
             h2, c2 = self.layer2.forward(h1, h2, c2)
         return h2 @ self.W_out + self.b_out
+
+def dropout_mask(size, keep_prob):
+    mask = (np.random.rand(*size) < keep_prob).astype(float)
+    return mask / keep_prob
+
+class LSTMWithDropout:
+    def __init__(self, input_size, hidden_size, keep_prob=0.8):
+        self.cell = LSTMCell(input_size, hidden_size)
+        self.keep_prob = keep_prob
+        self.training = True
+
+    def forward(self, X):
+        h = np.zeros(self.cell.hidden_size)
+        c = np.zeros(self.cell.hidden_size)
+        for t in range(X.shape[0]):
+            x = X[t]
+            if self.training:
+                x = x * dropout_mask(x.shape, self.keep_prob)
+            h, c = self.cell.forward(x, h, c)
+        return h
