@@ -28,3 +28,23 @@ class AttentionLSTM:
         k = H @ self.W_k
         ctx, _ = attention(q[None], k, H)
         return ctx[0]
+
+class MultiHeadAttention:
+    def __init__(self, d_model, n_heads):
+        self.n_heads = n_heads
+        self.d_k = d_model // n_heads
+        scale = 0.01
+        self.W_q = np.random.randn(d_model, d_model) * scale
+        self.W_k = np.random.randn(d_model, d_model) * scale
+        self.W_v = np.random.randn(d_model, d_model) * scale
+        self.W_o = np.random.randn(d_model, d_model) * scale
+
+    def forward(self, X):
+        Q = X @ self.W_q
+        K = X @ self.W_k
+        V = X @ self.W_v
+        scores = Q @ K.T / np.sqrt(self.d_k)
+        weights = np.exp(scores - scores.max(axis=-1, keepdims=True))
+        weights /= weights.sum(axis=-1, keepdims=True) + 1e-8
+        out = weights @ V @ self.W_o
+        return out
