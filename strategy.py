@@ -29,3 +29,13 @@ def momentum(df, formation=252, skip=21):
     past_return = close.shift(skip) / close.shift(formation) - 1
     return (past_return > past_return.median()).astype(int).diff().fillna(0)
 
+def mean_reversion(df, window=30, z_entry=1.5, z_exit=0.5):
+    close = df['Close']
+    z = (close - close.rolling(window).mean()) / close.rolling(window).std()
+    signal = pd.Series(0, index=close.index)
+    signal[z < -z_entry] =  1
+    signal[z >  z_entry] = -1
+    signal[(z.abs() < z_exit)] = 0
+    import pandas as pd
+    return signal.diff().fillna(0)
+
