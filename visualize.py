@@ -110,3 +110,16 @@ def plot_feature_importance(names, importances, top_n=20):
     ax.set_xlabel("Importance")
     fig.tight_layout()
     return fig
+
+def plot_regime_overlay(dates, prices, regimes, labels=None):
+    import matplotlib.pyplot as plt
+    colors = {0: "#ff4444", 1: "#ffaa00", 2: "#44bb44"}
+    fig, ax = plt.subplots(figsize=(14, 5))
+    ax.plot(dates, prices, color="black", linewidth=1, zorder=3)
+    prev = regimes[0]; start = 0
+    for i in range(1, len(regimes)):
+        if regimes[i] != prev or i == len(regimes)-1:
+            ax.axvspan(dates[start], dates[i], alpha=0.25, color=colors.get(int(prev), "#aaaaaa"))
+            start = i; prev = regimes[i]
+    fig.tight_layout()
+    return fig
