@@ -13,3 +13,23 @@ def in_vs_out(in_sample, out_sample):
     print(f'Out-sample Sharpe: {out_sample:.3f}')
     print(f'Ratio: {ratio:.2f}  ({'good' if ratio > 0.6 else 'overfitting'})')
 
+
+def confusion_matrix(y_true, y_pred, classes=(0, 1)):
+    n = len(classes)
+    cm = np.zeros((n, n), dtype=int)
+    for t, p in zip(y_true, y_pred):
+        cm[int(t)][int(p)] += 1
+    return cm
+
+def classification_report(y_true, y_pred):
+    cm = confusion_matrix(y_true, y_pred)
+    prec = cm[1,1] / (cm[1,1] + cm[0,1] + 1e-8)
+    rec  = cm[1,1] / (cm[1,1] + cm[1,0] + 1e-8)
+    f1   = 2 * prec * rec / (prec + rec + 1e-8)
+    return {"precision": prec, "recall": rec, "f1": f1, "cm": cm}
+
+def portfolio_attribution(returns, factor_returns, weights):
+    """Brinson-Hood-Beebower attribution."""
+    selection = weights * (returns - factor_returns)
+    allocation = (weights - 1/len(weights)) * factor_returns
+    return {"selection": selection.sum(), "allocation": allocation.sum()}
