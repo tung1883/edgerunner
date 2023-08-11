@@ -37,3 +37,26 @@ def plot_correlation(df, out='correlation.png'):
     plt.savefig(out)
     plt.close()
 
+
+def plot_equity_curve(dates, equity, benchmark=None, title="Equity Curve"):
+    import matplotlib.pyplot as plt
+    fig, ax = plt.subplots(figsize=(12, 5))
+    ax.plot(dates, equity, label="Strategy", linewidth=1.5)
+    if benchmark is not None:
+        ax.plot(dates, benchmark, label="Buy & Hold", linewidth=1, linestyle="--", alpha=0.7)
+    ax.set_title(title)
+    ax.legend()
+    ax.set_ylabel("Portfolio value")
+    fig.tight_layout()
+    return fig
+
+def plot_drawdown(dates, equity):
+    import matplotlib.pyplot as plt
+    roll_max = np.maximum.accumulate(equity)
+    dd = (equity - roll_max) / roll_max
+    fig, ax = plt.subplots(figsize=(12, 3))
+    ax.fill_between(dates, dd, 0, color="red", alpha=0.4, label="Drawdown")
+    ax.set_title("Drawdown")
+    ax.legend()
+    fig.tight_layout()
+    return fig
