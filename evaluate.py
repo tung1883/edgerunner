@@ -50,3 +50,9 @@ def quantile_returns(predicted_returns, actual_returns, n_quantiles=5):
         mask = (predicted_returns >= edges[i]) & (predicted_returns < edges[i+1])
         qret.append(actual_returns[mask].mean() if mask.sum() else 0.0)
     return np.array(qret)
+
+def sortino_ratio(returns, target_return=0.0, period=252):
+    excess = returns - target_return / period
+    downside = excess[excess < 0]
+    downside_std = np.sqrt((downside**2).mean()) * np.sqrt(period)
+    return excess.mean() * period / (downside_std + 1e-8)
