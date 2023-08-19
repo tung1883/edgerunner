@@ -60,3 +60,33 @@ def plot_drawdown(dates, equity):
     ax.legend()
     fig.tight_layout()
     return fig
+
+def plot_rolling_sharpe(dates, returns, window=252):
+    import matplotlib.pyplot as plt
+    sharpe = []
+    for i in range(len(returns)):
+        r = returns[max(0,i-window):i+1]
+        s = r.mean() / (r.std() + 1e-8) * np.sqrt(252)
+        sharpe.append(s)
+    fig, ax = plt.subplots(figsize=(12, 3))
+    ax.plot(dates, sharpe, label=f"Rolling {window}d Sharpe")
+    ax.axhline(0, color="gray", linewidth=0.8)
+    ax.legend()
+    fig.tight_layout()
+    return fig
+
+def plot_monthly_returns_heatmap(returns, dates):
+    import matplotlib.pyplot as plt
+    from collections import defaultdict
+    monthly = defaultdict(dict)
+    for r, d in zip(returns, dates):
+        monthly[d.year][d.month] = monthly[d.year].get(d.month, 1) * (1 + r)
+    years = sorted(monthly.keys())
+    data = [[monthly[y].get(m, 0) - 1 for m in range(1,13)] for y in years]
+    fig, ax = plt.subplots(figsize=(12, len(years)))
+    im = ax.imshow(data, cmap="RdYlGn", aspect="auto")
+    ax.set_yticks(range(len(years))); ax.set_yticklabels(years)
+    ax.set_xticks(range(12)); ax.set_xticklabels(["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"])
+    plt.colorbar(im, ax=ax)
+    fig.tight_layout()
+    return fig
