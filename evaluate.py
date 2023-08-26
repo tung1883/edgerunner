@@ -33,3 +33,20 @@ def portfolio_attribution(returns, factor_returns, weights):
     selection = weights * (returns - factor_returns)
     allocation = (weights - 1/len(weights)) * factor_returns
     return {"selection": selection.sum(), "allocation": allocation.sum()}
+
+def information_coefficient(predicted_returns, actual_returns, n_quantiles=5):
+    """Rank IC — Spearman correlation between predicted and actual."""
+    pred_rank   = predicted_returns.argsort().argsort()
+    actual_rank = actual_returns.argsort().argsort()
+    n = len(pred_rank)
+    d2 = ((pred_rank - actual_rank)**2).sum()
+    return 1 - 6 * d2 / (n * (n**2 - 1) + 1e-8)
+
+def quantile_returns(predicted_returns, actual_returns, n_quantiles=5):
+    """Actual returns per predicted-return quantile bucket."""
+    edges = np.percentile(predicted_returns, np.linspace(0, 100, n_quantiles + 1))
+    qret  = []
+    for i in range(n_quantiles):
+        mask = (predicted_returns >= edges[i]) & (predicted_returns < edges[i+1])
+        qret.append(actual_returns[mask].mean() if mask.sum() else 0.0)
+    return np.array(qret)
