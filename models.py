@@ -23,3 +23,9 @@ def train_gb(X_train, y_train):
     model.fit(X_train, y_train)
     return model
 
+def train_rf_regularised(X_train, y_train):
+    model = RandomForestClassifier(n_estimators=50, max_depth=4,
+                                    min_samples_leaf=20, random_state=42)
+    model.fit(X_train, y_train)
+    return model
+
