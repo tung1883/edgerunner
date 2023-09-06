@@ -33,3 +33,16 @@ class SimBroker:
     def equity(self, prices):
         pos_val = sum(self.positions.get(t, 0) * p for t, p in prices.items())
         return self.cash + pos_val
+
+class MarginAccount(SimBroker):
+    def __init__(self, initial_cash=100_000, margin_ratio=2.0):
+        super().__init__(initial_cash)
+        self.margin_ratio = margin_ratio
+        self.margin_used  = 0.0
+
+    def buying_power(self, prices):
+        return self.equity(prices) * self.margin_ratio - self.margin_used
+
+    def margin_call(self, prices):
+        eq = self.equity(prices)
+        return eq < self.margin_used * 0.25
