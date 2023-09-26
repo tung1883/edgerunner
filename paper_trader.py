@@ -16,4 +16,7 @@ class PaperTrader:
         elif signal < 0:
             self.portfolio.sell(ticker, price)
             self.log.append({'action': 'SELL', 'ticker': ticker, 'price': price})
+    def export(self, path='trades.csv'):
+        import pandas as pd
+        pd.DataFrame(self.log).to_csv(path, index=False)
 
