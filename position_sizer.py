@@ -20,3 +20,8 @@ def equal_risk_contribution(cov_matrix):
         w = w / (mrc + 1e-8)
         w /= w.sum()
     return w
+
+def fixed_fractional(equity, risk_per_trade, stop_distance_pct):
+    """Risk a fixed fraction of equity per trade."""
+    risk_amount = equity * risk_per_trade
+    return risk_amount / (stop_distance_pct + 1e-8)
