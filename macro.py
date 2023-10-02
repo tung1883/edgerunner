@@ -17,3 +17,18 @@ def fear_greed(vix, put_call_ratio, momentum):
 
 def economic_surprise(actual, expected):
     return (actual - expected) / (np.abs(expected) + 1e-8)
+
+def momentum_factor(returns_matrix, lookback=252, skip=21):
+    """Cross-sectional momentum — rank assets by past returns."""
+    if len(returns_matrix) < lookback:
+        return np.zeros(returns_matrix.shape[1])
+    cum = returns_matrix[-lookback:-skip].sum(axis=0)
+    rank = cum.argsort().argsort().astype(float)
+    rank = (rank - rank.mean()) / (rank.std() + 1e-8)
+    return rank
+
+def value_factor(pe_ratios):
+    """Long cheap (low P/E), short expensive."""
+    r = pe_ratios.argsort().argsort().astype(float)
+    r = -(r - r.mean()) / (r.std() + 1e-8)
+    return r
