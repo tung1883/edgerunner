@@ -39,3 +39,12 @@ def mean_reversion(df, window=30, z_entry=1.5, z_exit=0.5):
     import pandas as pd
     return signal.diff().fillna(0)
 
+def macd_rsi_combined(df):
+    from indicators import macd, rsi
+    close = df['Close']
+    macd_line, sig = macd(close)
+    r = rsi(close)
+    buy  = ((macd_line > sig) & (r < 60)).astype(int)
+    sell = ((macd_line < sig) & (r > 40)).astype(int)
+    return (buy - sell).diff().fillna(0)
+
