@@ -29,3 +29,7 @@ def train_rf_regularised(X_train, y_train):
     model.fit(X_train, y_train)
     return model
 
+def sharpe_score(y_true, y_pred):
+    rets = y_true * y_pred
+    return rets.mean() / (rets.std() + 1e-9) * (252 ** 0.5)
+
