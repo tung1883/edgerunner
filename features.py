@@ -62,3 +62,14 @@ def day_of_week(dates):
 
 def month_of_year(dates):
     return np.array([d.month for d in dates])
+
+def on_balance_volume_feature(close, volume):
+    obv = np.zeros(len(close))
+    for i in range(1, len(close)):
+        if close[i] > close[i-1]:
+            obv[i] = obv[i-1] + volume[i]
+        elif close[i] < close[i-1]:
+            obv[i] = obv[i-1] - volume[i]
+        else:
+            obv[i] = obv[i-1]
+    return obv
