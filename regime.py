@@ -34,3 +34,18 @@ def hmm_regime(returns, n_states=2, n_iter=50):
                 mu[s] = returns[mask].mean()
                 sigma[s] = returns[mask].std() + 1e-6
     return alpha.argmax(axis=1)
+
+def rolling_regime(returns, window=63):
+    """Label each day as bull/bear/sideways based on rolling stats."""
+    labels = np.zeros(len(returns), dtype=int)
+    for i in range(window, len(returns)):
+        r = returns[i-window:i]
+        ann_ret = r.mean() * 252
+        vol = r.std() * np.sqrt(252)
+        if ann_ret > 0.10:
+            labels[i] = 2   # bull
+        elif ann_ret < -0.10:
+            labels[i] = 0   # bear
+        else:
+            labels[i] = 1   # sideways
+    return labels
