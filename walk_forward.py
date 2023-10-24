@@ -13,3 +13,15 @@ def walk_forward(df, model_fn, n_splits=5):
         results.append(model(test))
     return results
 
+def purged_kfold(df, n_splits=5, gap=5):
+    n = len(df)
+    fold = n // n_splits
+    folds = []
+    for i in range(n_splits):
+        test_start = i * fold
+        test_end   = (i+1) * fold
+        train_idx  = list(range(0, max(0, test_start - gap))) +                      list(range(min(n, test_end + gap), n))
+        test_idx   = list(range(test_start, test_end))
+        folds.append((train_idx, test_idx))
+    return folds
+
