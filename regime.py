@@ -49,3 +49,12 @@ def rolling_regime(returns, window=63):
         else:
             labels[i] = 1   # sideways
     return labels
+
+def crisis_indicator(vix_series, credit_spread, threshold_vix=35, threshold_cs=3.0):
+    """Binary crisis flag when VIX and credit spread spike simultaneously."""
+    return ((vix_series > threshold_vix) & (credit_spread > threshold_cs)).astype(int)
+
+def adaptive_lookback(regime_labels, base_window=20):
+    """Use shorter lookback in volatile regimes."""
+    windows = np.where(regime_labels == 0, base_window // 2, base_window)
+    return windows
