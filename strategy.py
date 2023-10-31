@@ -48,3 +48,8 @@ def macd_rsi_combined(df):
     sell = ((macd_line < sig) & (r > 40)).astype(int)
     return (buy - sell).diff().fillna(0)
 
+def sector_rotation(sector_returns, top_n=2):
+    monthly = sector_returns.resample('ME').last().pct_change()
+    signals = monthly.rank(axis=1, ascending=False) <= top_n
+    return signals.astype(int)
+
