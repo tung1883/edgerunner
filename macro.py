@@ -32,3 +32,9 @@ def value_factor(pe_ratios):
     r = pe_ratios.argsort().argsort().astype(float)
     r = -(r - r.mean()) / (r.std() + 1e-8)
     return r
+
+def risk_on_risk_off(equity_returns, bond_returns, window=20):
+    """Positive = risk-on, negative = risk-off."""
+    eq_mom  = np.convolve(equity_returns, np.ones(window)/window, mode='same')
+    bnd_mom = np.convolve(bond_returns,   np.ones(window)/window, mode='same')
+    return eq_mom - bnd_mom
