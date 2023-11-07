@@ -15,3 +15,17 @@ def select_k_best(X, y, k=20):
 
 def variance_threshold(X, threshold=0.01):
     return np.where(X.var(axis=0) > threshold)[0]
+
+def recursive_feature_elimination(model_factory, X, y, n_features=10):
+    """Greedily remove the least important feature each round."""
+    remaining = list(range(X.shape[1]))
+    while len(remaining) > n_features:
+        m = model_factory()
+        m.fit(X[:, remaining], y)
+        if hasattr(m, 'feature_importances_'):
+            imp = m.feature_importances_
+        else:
+            imp = np.abs(m.w) if hasattr(m, 'w') else np.ones(len(remaining))
+        worst = remaining[np.argmin(imp)]
+        remaining.remove(worst)
+    return remaining
