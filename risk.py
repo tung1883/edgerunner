@@ -14,3 +14,12 @@ def calmar(equity, returns):
     mdd = abs(max_drawdown(equity))
     return ann_return / (mdd + 1e-9)
 
+def beta(asset_returns, market_returns):
+    import numpy as np
+    cov = np.cov(asset_returns, market_returns)[0, 1]
+    return cov / market_returns.var()
+
+def alpha(asset_returns, market_returns, rfr=0.0):
+    b = beta(asset_returns, market_returns)
+    return asset_returns.mean() - rfr - b * (market_returns.mean() - rfr)
+
