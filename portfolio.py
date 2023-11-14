@@ -23,3 +23,8 @@ class Portfolio:
         pos_val = sum(self.positions.get(t, 0) * p for t, p in prices.items())
         return self.capital + pos_val
 
+    def max_position_value(self, prices, max_pct=0.20):
+        total = self.value(prices)
+        return {t: min(self.positions.get(t,0)*p, total*max_pct)
+                for t, p in prices.items()}
+
