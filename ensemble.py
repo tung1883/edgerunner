@@ -34,3 +34,23 @@ class StackedEnsemble:
     def predict(self, X):
         base_preds = np.column_stack([m.predict(X) for m in self.bases])
         return self.meta.predict(base_preds)
+
+class BaggingEnsemble:
+    def __init__(self, base_factory, n_estimators=20, sample_frac=0.8):
+        self.factory = base_factory
+        self.n = n_estimators
+        self.frac = sample_frac
+        self.models = []
+
+    def fit(self, X, y):
+        n = len(X)
+        self.models = []
+        for _ in range(self.n):
+            idx = np.random.choice(n, int(n * self.frac), replace=True)
+            m = self.factory()
+            m.fit(X[idx], y[idx])
+            self.models.append(m)
+
+    def predict(self, X):
+        preds = np.array([m.predict(X) for m in self.models])
+        return np.round(preds.mean(axis=0)).astype(int)
