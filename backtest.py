@@ -53,3 +53,29 @@ def run_with_stops(df, signals, stop_pct=0.05, tp_pct=0.10):
     import pandas as pd
     return pd.Series(portfolio, index=signals.index)
 
+def trailing_stop(df, signals, trail_pct=0.07):
+    from config import INITIAL_CAPITAL, COMMISSION
+    capital  = INITIAL_CAPITAL
+    position = 0
+    peak     = 0.0
+    portfolio = []
+    for date, sig in signals.items():
+        price = df.loc[date, 'Close']
+        if position > 0:
+            peak = max(peak, price)
+            if price < peak * (1 - trail_pct):
+                capital  += position * price * (1 - COMMISSION)
+                position  = 0
+                peak      = 0.0
+        if sig > 0 and position == 0:
+            position = capital / price
+            capital -= position * price * (1 + COMMISSION)
+            peak     = price
+        elif sig < 0 and position > 0:
+            capital  += position * price * (1 - COMMISSION)
+            position  = 0
+            peak      = 0.0
+        portfolio.append(capital + position * price)
+    import pandas as pd
+    return pd.Series(portfolio, index=signals.index)
+
