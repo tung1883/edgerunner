@@ -54,3 +54,27 @@ class BaggingEnsemble:
     def predict(self, X):
         preds = np.array([m.predict(X) for m in self.models])
         return np.round(preds.mean(axis=0)).astype(int)
+
+class AdaBoost:
+    def __init__(self, base_factory, n_estimators=50):
+        self.factory = base_factory
+        self.n = n_estimators
+        self.models, self.alphas = [], []
+
+    def fit(self, X, y):
+        n = len(y)
+        w = np.ones(n) / n
+        y_ = 2*y - 1
+        for _ in range(self.n):
+            m = self.factory()
+            m.fit(X, (w * y_).astype(int))
+            pred = 2*m.predict(X) - 1
+            err  = w[pred != y_].sum() + 1e-8
+            alpha = 0.5 * np.log((1 - err) / err)
+            w *= np.exp(-alpha * y_ * pred)
+            w /= w.sum()
+            self.models.append(m); self.alphas.append(alpha)
+
+    def predict(self, X):
+        scores = sum(a * (2*m.predict(X)-1) for m, a in zip(self.models, self.alphas))
+        return (scores >= 0).astype(int)
