@@ -25,3 +25,17 @@ def purged_kfold(df, n_splits=5, gap=5):
         folds.append((train_idx, test_idx))
     return folds
 
+
+def anchored_walk_forward(model_factory, X, y, start_pct=0.4):
+    """Expanding-window walk forward (anchored at start)."""
+    n = len(X)
+    start = int(n * start_pct)
+    results = []
+    step = max(1, (n - start) // 20)
+    for t in range(start, n - step, step):
+        m = model_factory()
+        m.fit(X[:t], y[:t])
+        preds = m.predict(X[t:t+step])
+        acc = np.mean(preds == y[t:t+step])
+        results.append(acc)
+    return results
