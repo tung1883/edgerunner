@@ -23,3 +23,12 @@ def alpha(asset_returns, market_returns, rfr=0.0):
     b = beta(asset_returns, market_returns)
     return asset_returns.mean() - rfr - b * (market_returns.mean() - rfr)
 
+def stress_test(weights, scenario_returns):
+    losses = []
+    for scenario in scenario_returns:
+        port_loss = (weights * scenario).sum()
+        losses.append(port_loss)
+    import numpy as np
+    return {'mean_loss': float(np.mean(losses)),
+            'worst_loss': float(np.min(losses))}
+
