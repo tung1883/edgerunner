@@ -18,3 +18,9 @@ def generate_report(metrics: dict, output_path="outputs/report.html"):
     with open(output_path, "w") as f:
         f.write(html)
     return output_path
+
+def save_metrics_json(metrics: dict, path="outputs/metrics.json"):
+    import json, os
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(path, "w") as f:
+        json.dump({k: float(v) if hasattr(v, '__float__') else v for k, v in metrics.items()}, f, indent=2)
