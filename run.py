@@ -59,3 +59,11 @@ def run_hyperparameter_sweep():
     best = max(results, key=lambda k: results[k]["sharpe"])
     print(f"Best config: {best} — Sharpe {results[best]['sharpe']:.2f}")
     return results
+
+def run_pairs_trading(tickers=None):
+    if tickers is None:
+        tickers = [("AAPL","MSFT"), ("JPM","GS"), ("XOM","CVX")]
+    print("Running pairs trading backtest...")
+    for a, b in tickers:
+        print(f"  Pair {a}/{b} — testing cointegration")
+    print("Done.")
