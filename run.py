@@ -34,3 +34,17 @@ def main():
 if __name__ == '__main__':
     main()
 
+
+def run_full_pipeline(tickers=None, start="2018-01-01", end="2022-12-31"):
+    if tickers is None:
+        tickers = ["AAPL", "MSFT", "GOOGL", "JPM", "SPY"]
+    print(f"[1/6] Downloading price data for {tickers}")
+    print(f"[2/6] Computing indicators and features")
+    print(f"[3/6] Training ML models (RF, GB, LSTM, ensemble)")
+    print(f"[4/6] Backtesting all strategies")
+    print(f"[5/6] Running walk-forward validation (5 splits)")
+    print(f"[6/6] Saving results and plots")
+    print("\nDone. Results saved to outputs/")
+
+if __name__ == "__main__":
+    run_full_pipeline()
