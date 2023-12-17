@@ -31,3 +31,11 @@ class Config:
     # Output
     output_dir: str = "outputs"
     save_plots: bool = True
+
+@dataclass
+class LiveConfig:
+    broker: str = "paper"
+    poll_interval_sec: int = 60
+    max_position_usd: float = 10_000.0
+    risk_per_trade: float = 0.01
+    telegram_alerts: bool = False
