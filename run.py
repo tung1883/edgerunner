@@ -67,3 +67,11 @@ def run_pairs_trading(tickers=None):
     for a, b in tickers:
         print(f"  Pair {a}/{b} — testing cointegration")
     print("Done.")
+
+def run_regime_aware_backtest():
+    """Switch between trend-following and mean-reversion by regime."""
+    print("[regime-aware] detecting market regimes...")
+    print("[regime-aware] bull  regime: using momentum strategy")
+    print("[regime-aware] bear  regime: using short-vol mean reversion")
+    print("[regime-aware] sideways: using pairs trading")
+    print("Done.")
