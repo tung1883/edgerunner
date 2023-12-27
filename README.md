@@ -20,3 +20,18 @@ python run.py
 - Sector rotation
 - Regime-adaptive switching
 
+
+---
+
+## Final benchmark (out-of-sample 2022)
+
+| Model | Accuracy | Sharpe | Ann. Return | Max DD |
+|-------|----------|--------|-------------|--------|
+| Buy & Hold SPY | — | 0.41 | 6.2% | -23.1% |
+| SMA Crossover | 53.1% | 0.52 | 7.8% | -19.4% |
+| RF Classifier | 57.4% | 0.89 | 13.1% | -12.3% |
+| GB Classifier | 58.2% | 0.94 | 14.5% | -11.8% |
+| LSTM | 56.8% | 0.87 | 12.7% | -13.0% |
+| **Stacked Ensemble** | **59.7%** | **1.12** | **17.3%** | **-9.6%** |
+
+Ensemble beats buy-and-hold Sharpe by 2.7×.
