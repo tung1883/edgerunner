@@ -13,4 +13,9 @@ def grid_search(df, fast_range, slow_range, metric_fn):
             best_score = score
             best_params = (fast, slow)
     return best_params, best_score
+import json
+
+def save_results(results, path='results.json'):
+    with open(path, 'w') as f:
+        json.dump(results, f, indent=2)
 
