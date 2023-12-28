@@ -75,3 +75,13 @@ def run_regime_aware_backtest():
     print("[regime-aware] bear  regime: using short-vol mean reversion")
     print("[regime-aware] sideways: using pairs trading")
     print("Done.")
+
+def print_summary(results: dict):
+    print("\n" + "="*55)
+    print(f"{'Strategy':<30} {'Sharpe':>8} {'Return':>10}")
+    print("-"*55)
+    for name, r in sorted(results.items(), key=lambda x: -x[1].get("sharpe", 0)):
+        sharpe = r.get("sharpe", 0)
+        ret    = r.get("ann_return", 0)
+        print(f"{name:<30} {sharpe:>8.2f} {ret:>9.1%}")
+    print("="*55)
