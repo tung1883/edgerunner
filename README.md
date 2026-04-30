@@ -1,4 +1,4 @@
-# quant_trader
+# edgrunner
 
 ML-driven quantitative trading bot — technical indicators, regime detection, LSTM price prediction, and ensemble signal generation. Backtested on 5 years of US equity data.
 
